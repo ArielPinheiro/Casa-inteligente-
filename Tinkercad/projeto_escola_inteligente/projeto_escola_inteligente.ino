@@ -1,32 +1,34 @@
 //Library
-#include <Servo.h>
 #include <LiquidCrystal_I2C.h>
 #include <DHT11.h>
 #include <DHT.h>
 #include <DHT_U.h>
+//#include <Servo.h>
+#include <ESP32Servo.h>
 
 //atalho de arrumar o codigo(SHIFT + ALT + f)
 
 //Variaveis acenderLEDAoDetectarPresenca
-const int PIR = 2;
-const int LedVermelho = 13;
+const int PIR = 5; //GPIO que o PIR esta plugado
+const int LedVermelho = 2;
 
 //Variaveis verificarVazamentoDegas
-const int MQ135 = A0;
+const int MQ135 = 34;
 const int buzzer = 12;
 
 //Variaveis GLobais Abrir e fechar trava
-const int rele = 7;
+const int rele = 15;
 
 //Variaveis temperatura e umidade
-#define DHTPINO A1
+#define DHTPINO 23
 #define DHTTYPE DHT11
 
 DHT dht(DHTPINO, DHT11);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-//vairavel do tipo servo para o motor
+//variavel do tipo servo
 Servo motor;
+const int servoMotor = 18;
 
 void acenderLEDAoDetectarPresenca() {
   int estadoPIR = digitalRead(PIR);  //
@@ -105,10 +107,10 @@ void destrancarPorta(){
 digitalWrite(rele, HIGH);
 Serial.println("Porta destrancada...");
 
-abrirPortaAutomatica();//chama a função que irá abrir a porta automática
-fecharPortaAutomatica(); //fecha a porta
+abrirPortaAutomatica();//chama a função que irá abrir a porta automática,juy
+ fecharPortaAutomatica(); //fecha a porta
  }else{
-if(motor.read() != 0){
+ if(motor.read() != 0){
    fecharPortaAutomatica();
 }
 
@@ -120,6 +122,8 @@ delay(3000);
  Serial.println("Porta destrancada...");
  delay(1500);
 }
+
+
 
 void setup() {
   Serial.begin(9600);  //inicia a comunicação com o monitor
@@ -133,7 +137,7 @@ void setup() {
   pinMode(LedVermelho, OUTPUT);
   pinMode(buzzer, OUTPUT);
   pinMode(MQ135, INPUT);
-  motor.attach(3);
+  motor.attach(servoMotor); //variavel servoMotor armazena o GPIO que o motor está
   pinMode(rele, OUTPUT);
 
   //deixa trancado a mini solenoide
@@ -151,6 +155,8 @@ void setup() {
   lcd.setCursor(0, 1);  //segunda linha
   lcd.print("Obrigada!");
 }
+
+
 
 void loop() {
   destrancarPorta();
