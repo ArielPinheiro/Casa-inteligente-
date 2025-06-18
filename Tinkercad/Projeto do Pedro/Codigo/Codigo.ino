@@ -216,20 +216,17 @@ void destrancarPorta() {
 
 void alarmePorta() { 
   if (anguloAtual == 90) {
-    // Se ainda não começou a contar o tempo
-    if (tempoPortaAberta == 0) {
-      tempoPortaAberta = millis(); // Marca o início da porta aberta
-    }
+    
 
     // Se já se passaram mais de 5 segundos com a porta aberta
-    if (millis() - tempoPortaAberta >= 4000) {
-      digitalWrite(buzzer, HIGH);
+    if ((millis() - tempoPortaAberta) >= 4000) {
+      tone(buzzer, 1000);
       Serial.println("Porta aberta por mais de 4 segundos! Feche-a.");
     }
   } else {
     // Porta fechada: reseta o tempo e desliga o alarme
     tempoPortaAberta = 0;
-    digitalWrite(buzzer, LOW);
+      noTone(buzzer);
   }
 }
 
